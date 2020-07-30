@@ -1,5 +1,5 @@
-from SemanticNet.PretrainedBackbone import TwoWayFPNBackbone
-from SemanticNet.semantichead import SemanticNet
+from SemanticNet.model.PretrainedBackbone import TwoWayFPNBackbone
+from SemanticNet.model.semantichead import SemanticHead
 import torch.nn as nn
 
 
@@ -7,18 +7,12 @@ class Network(nn.Module):
     def __init__(self):
         super(Network, self).__init__()
         
-        self.nc = 20
-        self.backbone = TwoWayFPNBackbone()
-        self.semantic = SemanticNet()
-
-        self.conv = nn.Conv2d(512, self.nc, 1)
-
+        self.backbone = TwoWayFPNBackbone().to('cuda')
+        self.semantic = SemanticHead().to('cuda')
     
     def forward(self, x):
 
         x = self.backbone(x)
-        x = self.semantic(x['0'], x['1'], x['2'], x['3'])
-
-        x = self.conv(x)
+        x = self.semantic(x['3'], x['2'], x['1'], x['0'])
         
-        return cat
+        return x

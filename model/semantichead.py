@@ -135,7 +135,7 @@ class SemanticHead(nn.Module):
         self.up2 = nn.Upsample((256, 512), mode = 'bilinear')
         self.up3 = nn.Upsample((256, 512), mode = 'bilinear')
         
-        self.lastconv = nn.Conv2d(512, 512, 1) ####### NEED TO CHANGE OUTPUT CHANNELS
+        self.lastconv = nn.Conv2d(512, 20, 1) ####### NEED TO CHANGE OUTPUT CHANNELS
         self.uplast = nn.Upsample((1024, 2048), mode = 'bilinear')
     
     
