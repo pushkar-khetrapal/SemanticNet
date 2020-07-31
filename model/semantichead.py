@@ -1,5 +1,5 @@
 import torch
-from inplace_abn.abn import InPlaceABN, InPlaceABNSync
+from inplace_abn.abn import ABN, InPlaceABN, InPlaceABNSync
 import torch.distributed as dist
 
 ## need to use iABNsync layer with leakyRelu
@@ -26,9 +26,9 @@ class LSFE(nn.Module):
     def __init__(self, ):
         super(LSFE, self).__init__()
         self.conv1 = SeparableConv2d(256, 128, 3)
-        self.bn1 = InPlaceABN(128)
+        self.bn1 = ABN(128)
         self.conv2 = SeparableConv2d(128, 128, 3)
-        self.bn2 = InPlaceABN(128)
+        self.bn2 = ABN(128)
     
     def forward(self, x):
         x = self.conv1(x)
@@ -43,9 +43,9 @@ class CorrectionModule(nn.Module):
     def __init__(self):
         super(CorrectionModule, self).__init__()
         self.conv1 = SeparableConv2d(128, 128, 3)
-        self.bn1 = InPlaceABN(128)
+        self.bn1 = ABN(128)
         self.conv2 = SeparableConv2d(128, 128, 3)
-        self.bn2 = InPlaceABN(128)
+        self.bn2 = ABN(128)
         self.up = nn.Upsample(scale_factor=2, mode='bilinear')
         ## upsampling 
 
@@ -65,25 +65,25 @@ class DPC(nn.Module):
         self.height = height
         self.width = width
 
-        self.bn1 = InPlaceABN(256)
+        self.bn1 = ABN(256)
         self.conv1 = SeparableConv2d(256, 256, 3, dilation=(1, 6))
         self.up1 = nn.Upsample((self.height, self.width), mode='bilinear')
 
-        self.bn2 = InPlaceABN(256)
+        self.bn2 = ABN(256)
         self.conv2 = SeparableConv2d(256, 256, 3, dilation=(1, 1))
         self.up2 = nn.Upsample((self.height, self.width), mode='bilinear')
 
 
-        self.bn3 = InPlaceABN(256)
+        self.bn3 = ABN(256)
         self.conv3 = SeparableConv2d(256, 256, 3, dilation=(6, 21))
         self.up3 = nn.Upsample((self.height, self.width), mode='bilinear')
 
-        self.bn4 = InPlaceABN(256)
+        self.bn4 = ABN(256)
         self.up_tocalculate18x3 = nn.Upsample((36, 64), mode='bilinear')
         self.conv4 = SeparableConv2d(256, 256, 3, dilation=(18, 15))
         self.up4 = nn.Upsample((self.height, self.width), mode='bilinear')
 
-        self.bn5 = InPlaceABN(256)
+        self.bn5 = ABN(256)
         self.conv5 = SeparableConv2d(256, 256, 3, dilation=(6,3))
         self.up5 = nn.Upsample((self.height, self.width), mode='bilinear')
 
